@@ -1,0 +1,67 @@
+import java.util.* ;
+import java.util.stream.Collectors ;
+import java.util.stream.* ;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+
+public class UserInterface {
+
+	public static void main(String[] args) {
+
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Enter the number of students");
+		int num = sc.nextInt();
+		sc.nextLine();
+		System.out.println("Enter the student details");
+		String markDetails[] = new String[num];
+		for (int i = 0; i < num; i++) {
+			markDetails[i] = sc.nextLine();
+		}
+
+		Map<String, Double> studMap = retrieveMinAndMaxMarksDetails(getStudentList(markDetails));
+
+		for (Map.Entry entry : studMap.entrySet()) {
+			System.out.println(entry.getKey() + ":" + entry.getValue());
+		}
+
+	}
+
+	// Create Student objects, set the values and return the List<Student>
+	
+	public static List<Student> getStudentList(String[] studArray) {
+
+		// Fill the code here
+        List<Student> std  = new ArrayList<>() ;
+        for(String studentDetails : studArray){
+            String[] temp = studentDetails.split(":");
+            std.add(new Student(temp[0],temp[1],Double.parseDouble(temp[2])));
+        }
+		return std;
+	}
+
+	// Make use of Collectors.teeing method to find the maximum and minimum marks of students and return the map(student name as key and minimum or maximum marks as value)
+	// Also use local variable syntax for lambda parameters
+	
+	public static Map<String, Double> retrieveMinAndMaxMarksDetails(List<Student> studentList) {
+
+		// Fill the code here
+		Map<String,Double> mp = new HashMap<>() ;
+		mp = studentList.stream().collect(
+		    Collectors.teeing(
+		        Collectors.maxBy(Comparator.comparing(Student::getMarks)),
+		        Collectors.minBy(Comparator.comparing(Student::getMarks)),
+		        (var e1 , var e2)->{
+		            Map<String,Double>map = new HashMap<>() ;
+		            map.put(e1.get().getName(),e1.get().getMarks());
+		            map.put(e2.get().getName(),e2.get().getMarks());
+		            
+		            
+		            return map ;
+		        }
+
+		        )
+		    );
+		return mp;
+	}
+}
