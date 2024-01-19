@@ -1,0 +1,83 @@
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Scanner;
+import java.io.IOException;
+import java.nio.file.Files ;
+import java.nio.file.StandardOpenOption;
+
+public class UserInterface {
+
+	public static void main(String[] args) throws IOException {
+
+		Path path1 = Paths.get("SchoolBusAllocation/studentDetails.txt");
+		Path path2 = Paths.get("SchoolBusAllocation/studentDetailsWithBusNo.txt");
+        String studDetails=readFile(path1);
+        System.out.println("The details of the students read from studentDetails.txt file:\n"+studDetails);
+	    writeFile(studDetails,path2);
+	    long mismatchPos=checkMismatch(path1,path2);
+	    System.out.println("The mismatched position is "+mismatchPos);
+        
+	}
+
+    // Use Files.readString() to read the contents from studentDetails.txt file
+	public static String readFile(Path path1) {
+
+		// Fill the code here
+		String res = " " ;
+		try{
+		    res = Files.readString(path1);
+		}catch(IOException e){
+		    e.printStackTrace();
+		}
+
+		return res;
+
+	}
+
+    // Use Files.writetring() to write the contents to studentDetailsWithBusNo.txt file
+	public static void writeFile(String studentDetails, Path path2) {
+
+		// FIll the code here
+		StringBuilder res = new StringBuilder() ;
+		String[] lines = studentDetails.split("\n");
+		for(String line: lines){
+		    String[] parts = line.split(",");
+		    String location = parts[1].trim();
+		    
+		    switch(location){
+		        case "Washington" : line+= ",BusNo-3" ; break ;
+		        case "Chicago" : line+= ",BusNo-4" ; break ;
+		        case "Boston" : line+= ",BusNo-5" ; break ;
+
+		    }
+		    res.append(line).append("\n");
+		}
+		
+		
+		try{
+		    Files.writeString(path2,res.toString());
+		}
+		catch(IOException e){
+		    e.printStackTrace();
+		}
+
+
+	}
+
+    // Use Files.mismatch() to compare two files file
+	public static long checkMismatch(Path path1, Path path2) {
+
+		// Fill the code here
+		long ans = 0 ;
+		try{
+		    ans = Files.mismatch(path1,path2) ;
+		}
+		catch(Exception e){
+		    e.printStackTrace() ;
+		}
+
+		return ans;
+
+	}
+
+}
