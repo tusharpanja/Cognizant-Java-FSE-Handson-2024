@@ -1,0 +1,8 @@
+DECLARE
+l_department_id department.department_id%TYPE ;
+
+BEGIN
+    insert into department (department_id , department_name , location_id)
+    values ((select coalesce(max(department_id),0)+10 from department), 'TESTING' , 'CHN-102')
+    RETURNING department_id into l_department_id;
+END ;
